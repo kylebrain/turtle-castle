@@ -75,6 +75,7 @@ function drop_all_non_floors(floor_block_name)
 end
 
 function restock(turtleMove, floor_block_name)
+    print("Restocking...")
     local could_move = turtleMove:move(vector.new(0, 0, 0))
     if not could_move then
         print("Could not move back to restock")
@@ -84,6 +85,12 @@ function restock(turtleMove, floor_block_name)
 
     drop_all_non_floors(floor_block_name)
     turtleInventory.restock(turtle.suckUp)
+
+    local can_equip = turtleInventory.equipBlock(floor_block_name)
+    if not can_equip then
+        print("Restock failed")
+        return false
+    end
 
     print("Restocked!")
 
@@ -164,6 +171,7 @@ function map(turtleMove, borderBlock, floor_block_name)
         end
         turtleMove:turn_towards_block(vector.new(0, -1, 0))
         drop_all_non_floors(floor_block_name)
+        turtle.select(1)
 
 end
 
