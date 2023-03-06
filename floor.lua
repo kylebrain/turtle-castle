@@ -16,10 +16,6 @@ local function main(args)
         return
     end
 
-    local has_blocks = turtleInventory.equipBlock()
-    if not has_blocks then
-        return
-    end
     local movement = turtleMovement.new(vector.new(0, 0, 0), 0)
     print("Flooring!")
     turtleMap.floor(movement)

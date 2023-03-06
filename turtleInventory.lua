@@ -37,17 +37,17 @@ end
 function restock()
     for i = 1, BLOCK_SLOTS do
         turtle.select(i)
-        turtle.suckDown()
+        turtle.suckDown(turtle.getItemSpace())
     end
     turtle.select(1)
 end
 
-function equipBlock()
+function equipBlock(block_name)
     if turtle.getItemCount() == 0 then
         for i = 1, BLOCK_SLOTS do
             turtle.select(i)
             
-            if turtle.getItemCount() > 0 then
+            if turtle.getItemCount() > 0 and (block_name == nil or (block_name == turtle.getItemDetail().name)) then
                 return true
             end
 

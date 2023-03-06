@@ -113,7 +113,7 @@ local turtlePlus = {
         local position_diff = destination - self.position
         local vertAmmount = math.abs(position_diff.y)
         if steps_towards ~= nil then
-            vertAmmount = min(vertAmmount, steps_towards)
+            vertAmmount = math.min(vertAmmount, steps_towards)
         end
         if position_diff.y ~= 0 then
         
@@ -135,7 +135,7 @@ local turtlePlus = {
         local position_diff = destination - self.position
         local horizonalAmmount = math.abs(position_diff.x)
         if steps_towards ~= nil then
-            horizonalAmmount = min(horizonalAmmount, steps_towards)
+            horizonalAmmount = math.min(horizonalAmmount, steps_towards)
         end
 
         if position_diff.x ~= 0 then

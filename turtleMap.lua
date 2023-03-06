@@ -64,7 +64,7 @@ function unhash_vector(hash)
 end
 
 -- TODO: Check turtle api calls
-function map(turtleMove, borderBlock)
+function map(turtleMove, borderBlock, floor_block_name)
 
     -- search = { current position }
     local to_search = { }
@@ -90,11 +90,17 @@ function map(turtleMove, borderBlock)
         if can_move then
             local is_block_below, block_below = turtle.inspectDown()
             --print("border block: "..tostring(borderBlock.name).." below block: "..tostring(block_below.name))
-            if borderBlock == nil or (is_block_below and block_below.name ~= borderBlock.name) then
+            if borderBlock == nil or not is_block_below or (is_block_below and block_below.name ~= borderBlock.name) then
                 -- Dig down
-                local dug = turtle.digDown()
+                if is_block_below and block_below.name ~= floor_block_name then
+                    turtle.digDown()
+                end
+                
                 -- Equip
-                turtleInventory.equipBlock()
+                local can_equip = turtleInventory.equipBlock(floor_block_name)
+                if not can_equip then
+                    return
+                end
                 -- Place down
                 local placed = turtle.placeDown()
                 -- If Placed
@@ -123,6 +129,17 @@ end
 
 function floor(turtleMove)
 
+    turtle.select(1)
+    local floor_block = turtle.getItemDetail()
+    local floor_block_name
+    if floor_block == nil then
+        print("First slot must have your floor block")
+        return
+    else
+        print("Floor block is "..tostring(floor_block.name))
+        floor_block_name = floor_block.name
+    end
+
     local borderBlock = nil
     local is_block, block = turtle.inspectDown()
     if is_block then
@@ -130,6 +147,6 @@ function floor(turtleMove)
         turtleMove:move_relative(vector.new(0, 1, 0))
     end
 
-    map(turtleMove, borderBlock)
+    map(turtleMove, borderBlock, floor_block_name)
 
 end
