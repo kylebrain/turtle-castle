@@ -9,7 +9,9 @@ local packages =
     castle = "d69f3Vbj",
     pathFind = "KzzvJr3u",
     wallBuild = "ZDgMJGFp",
-    turtleInventory = "M9eJH1MW"
+    turtleInventory = "M9eJH1MW",
+    turtleMap = "fjFjB3e8",
+    floor = "bZjFGgqH"
     --queue = "RNj78LMd",
 }
 

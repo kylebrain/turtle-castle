@@ -197,30 +197,48 @@ local turtlePlus = {
     
     move = function (self, destination, steps_towards)
         -- TODO: Refuel if needed
+        -- TODO: steps_towards isn't really tested for anything besides 1
         local firstSuccessUp = self:move_up(destination)
         local cardinal_moves = self:move_order(destination)
         --local move_order = {self.move_up, table.unpack(cardinal_moves)}
 
         -- TODO: Use a queue to try failed movements again
-
+        local steps = 0
         for _, move in ipairs(cardinal_moves) do
-            local success, step_count = move(self, destination)
-            if not success then
-                print("2D Moved to "..tostring(destination).." failed")
-                return false
-            end
+            local success, step_count = move(self, destination, steps_towards)
 
-            -- TODO: Accumulate step count (only needed for 1 right now)
-            if steps_towards ~= nil and step_count >= steps_towards then
+            steps = steps + step_count
+            if steps_towards ~= nil and steps >= steps_towards then
                 --print("Stepped "..tostring(steps_towards))
                 break
             end
         end
 
+        if steps_towards ~= nil and steps >= steps_towards then
+            return true
+        end
+
+        for index, _ in ipairs(cardinal_moves) do
+            local move = cardinal_moves[#cardinal_moves - index + 1]
+            local success, step_count = move(self, destination, steps_towards)
+            if not success then
+                --print("2D move to "..tostring(destination).." failed")
+                return false
+            end
+
+            steps = steps + step_count
+            if steps_towards ~= nil and steps >= steps_towards then
+                --print("Stepped "..tostring(steps_towards))
+                break
+            end
+        end
+
+        
+
         local secondSuccessUp = self:move_up(destination)
 
         if not firstSuccessUp and not secondSuccessUp then
-            print("Up Moved to "..tostring(destination).."failed")
+            --print("Up move to "..tostring(destination).."failed")
             return false
         end
 
