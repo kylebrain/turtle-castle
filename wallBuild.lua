@@ -177,6 +177,7 @@ function build(turtleMovementObject, path, desired_height)
                                                                               iteration_direction,
                                                                               is_line)
         if not result then
+            head_to_stock(turtleMovementObject)
             return false
         end
     end
