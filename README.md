@@ -63,7 +63,9 @@ To create a floor for your castle run
 floor
 ```
 ## Setup
-Fill the first 12 slots of the inventory of the turle with your block (make sure slot 1 has a block)
+1. Fill the first 12 slots of the inventory of the turle with your block (make sure slot 1 has a block)
+2. [Optional] Place a restock chest above the turtle
+3. [Optional] Place a dump chest behind the turtle
 
 ## Floor
 1. Start the turtle inside of the walls (walls MUST block it from escaping)
@@ -72,10 +74,3 @@ Fill the first 12 slots of the inventory of the turle with your block (make sure
 ## Ceiling (flush with the walls)
 1. Start the turtle on top of your wall block facing into where the ceiling will be
 2. The turtle will detect the bottom block as its "border block" and consider these the walls
-
-## Restocking
-Restocking is not currently implemented so must be performed in chunks of 768 blocks (roughly 27 x 27)
-
-Or increase the `BLOCK_SLOTS` in `turtleInventory.lua` to 16 to get 1024 blocks (32 x 32)
-
-You can also let it run and then place wall blocks where it finished and re-run in the empty area

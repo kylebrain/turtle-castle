@@ -34,20 +34,28 @@ function needsRestock(currentHeight, desiredHeight, path_length, is_line)
     return layerCount > inventoryCount
 end
 
-function restock()
+function restock(suck_action)
     for i = 1, BLOCK_SLOTS do
         turtle.select(i)
-        turtle.suckDown(turtle.getItemSpace())
+        if suck_action == nil then
+            turtle.suckDown(turtle.getItemSpace())
+        else
+            suck_action(turtle.getItemSpace())
+        end
     end
     turtle.select(1)
 end
 
+function slot_has_items(block_name)
+    return turtle.getItemCount() > 0 and (block_name == nil or (block_name == turtle.getItemDetail().name))
+end
+
 function equipBlock(block_name)
-    if turtle.getItemCount() == 0 then
+    if not slot_has_items(block_name) then
         for i = 1, BLOCK_SLOTS do
             turtle.select(i)
             
-            if turtle.getItemCount() > 0 and (block_name == nil or (block_name == turtle.getItemDetail().name)) then
+            if slot_has_items(block_name) then
                 return true
             end
 

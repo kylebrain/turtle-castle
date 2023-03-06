@@ -63,6 +63,33 @@ function unhash_vector(hash)
     return vector.new(tonumber(vector_array[1]), tonumber(vector_array[2]), tonumber(vector_array[3]))
 end
 
+function drop_all_non_floors(floor_block_name)
+    -- TODO: Add buffer for fuel
+    for i=1, 16 do
+        turtle.select(i)
+        local itemDetail = turtle.getItemDetail()
+        if itemDetail ~= nil and itemDetail.name ~= floor_block_name then
+            turtle.drop()
+        end
+    end
+end
+
+function restock(turtleMove, floor_block_name)
+    local could_move = turtleMove:move(vector.new(0, 0, 0))
+    if not could_move then
+        print("Could not move back to restock")
+        return false
+    end
+    turtleMove:turn_towards_block(vector.new(0, -1, 0))
+
+    drop_all_non_floors(floor_block_name)
+    turtleInventory.restock(turtle.suckUp)
+
+    print("Restocked!")
+
+    return true
+end
+
 -- TODO: Check turtle api calls
 function map(turtleMove, borderBlock, floor_block_name)
 
@@ -99,31 +126,44 @@ function map(turtleMove, borderBlock, floor_block_name)
                 -- Equip
                 local can_equip = turtleInventory.equipBlock(floor_block_name)
                 if not can_equip then
-                    return
-                end
-                -- Place down
-                local placed = turtle.placeDown()
-                -- If Placed
-                if placed then
-                    -- Add adj to search list
-                    local adj = get_adjacent(turtleMove)
-                    --term.write("Adding: ")
-                    for i=1, #adj do
-                        local hashed_adj = hash_vector(adj[i])
-                        if have_searched[hashed_adj] == nil and to_search[hashed_adj] == nil then
-                            --term.write(hashed_adj..", ")
-                            to_search[hashed_adj] = true
-                        end
+                    local could_restock = restock(turtleMove)
+                    if not could_restock then
+                        return false
                     end
-                    --print("")
+                    -- Re-add the current block 
+                    to_search[hash_vector(closest)] = true
+                    have_searched[hash_vector(closest)] = nil
+                else
+                    -- Place down
+                    local placed = turtle.placeDown()
+                    -- If Placed
+                    if placed then
+                        -- Add adj to search list
+                        local adj = get_adjacent(turtleMove)
+                        --term.write("Adding: ")
+                        for i=1, #adj do
+                            local hashed_adj = hash_vector(adj[i])
+                            if have_searched[hashed_adj] == nil and to_search[hashed_adj] == nil then
+                                --term.write(hashed_adj..", ")
+                                to_search[hashed_adj] = true
+                            end
+                        end
+                        --print("")
+                    end
+                    end
                 end
-                end
+
             end
 
         end
 
-        turtleMove:move(vector.new(0,0,0))
-
+        local could_move_origin = turtleMove:move(vector.new(0, 0, 0))
+        if not could_move_origin then
+            print("Could not move back to origin")
+            return false
+        end
+        turtleMove:turn_towards_block(vector.new(0, -1, 0))
+        drop_all_non_floors(floor_block_name)
 
 end
 
